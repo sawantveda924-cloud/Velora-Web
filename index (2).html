@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velora Web — Modern Websites for Small Businesses</title>
+<meta name="description" content="Velora Web designs and builds modern, affordable, professional websites for small and local businesses.">
+
+<!-- ============================================================
+     FONTS
+     Display: Instrument Serif (headlines, italic emphasis)
+     Body:    Manrope (paragraphs, UI text)
+     Mono:    IBM Plex Mono (labels, prices, eyebrows)
+============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   0. RESET & ROOT TOKENS
+   ---------------------------------------------------------------
+   Edit brand colors, fonts and spacing scale here — everything
+   else in the file references these variables.
+============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+:root{
+  /* --- brand palette: beige / brown / olive / pistachio --- */
+  --ink:        #2E2A1E;   /* primary text / deep espresso-brown */
+  --ink-soft:   #5B5340;   /* secondary text */
+  --muted:      #8A7F65;   /* tertiary / captions */
+  --paper:      #F3ECDA;   /* page background, warm beige */
+  --paper-alt:  #E9DFC4;   /* alternating section background, deeper beige */
+  --card:       #FFFCF5;   /* card surfaces, soft cream */
+  --line:       #DECFA8;   /* hairline borders, tan */
+  --line-soft:  #E8DCB9;
+
+  --emerald:      #5C6B3C;  /* primary brand color — olive green */
+  --emerald-deep: #3E4A28;  /* hover / pressed — deep olive */
+  --emerald-tint: #E7EAD2;  /* soft badge backgrounds — pistachio tint */
+
+  --gold:       #9C6B3E;   /* accent — CTAs, highlights — warm brown */
+  --gold-deep:  #7A5129;
+  --gold-tint:  #EEE1C4;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 26px;
+
+  --shadow-sm: 0 2px 10px rgba(46, 42, 30, 0.08);
+  --shadow-md: 0 12px 32px rgba(46, 42, 30, 0.12);
+  --shadow-lg: 0 24px 60px rgba(46, 42, 30, 0.18);
+
+  --container: 1180px;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+body{
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+h1, h2, h3, h4 { font-weight: 500; line-height: 1.15; }
+
+.wrap{ max-width: var(--container); margin: 0 auto; padding: 0 32px; }
+
+/* section rhythm */
+.section{ padding: 128px 0; position: relative; }
+.section-alt{ background: var(--paper-alt); }
+@media (max-width: 768px){ .section{ padding: 84px 0; } }
+
+.eyebrow{
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.eyebrow::before{
+  content: "";
+  width: 20px; height: 1px;
+  background: var(--gold-deep);
+  display: inline-block;
+}
+
+.section-head{ max-width: 640px; margin-bottom: 64px; }
+.section-head h2{ font-family: var(--font-display); font-size: clamp(32px, 4.2vw, 46px); color: var(--ink); }
+.section-head p{ margin-top: 16px; font-size: 17px; color: var(--ink-soft); max-width: 520px; }
+.section-head.center{ margin-left: auto; margin-right: auto; text-align: center; }
+.section-head.center p{ margin-left: auto; margin-right: auto; }
+
+/* reveal-on-scroll utility, toggled by JS via IntersectionObserver */
+.reveal{ opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(.2,.7,.2,1); }
+.reveal.in-view{ opacity: 1; transform: translateY(0); }
+.reveal-delay-1.in-view{ transition-delay: .08s; }
+.reveal-delay-2.in-view{ transition-delay: .16s; }
+.reveal-delay-3.in-view{ transition-delay: .24s; }
+.reveal-delay-4.in-view{ transition-delay: .32s; }
+
+/* generic buttons */
+.btn{
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-body); font-weight: 700; font-size: 15px;
+  padding: 15px 28px; border-radius: 999px;
+  transition: transform 0.25s cubic-bezier(.2,.7,.2,1), box-shadow 0.25s ease, background 0.25s ease, color .25s ease, border-color .25s ease;
+  white-space: nowrap;
+}
+.btn-primary{ background: var(--gold); color: var(--ink); box-shadow: var(--shadow-sm); }
+.btn-primary:hover{ background: var(--gold-deep); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-outline{ background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+.btn-outline:hover{ background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+.btn-dark{ background: var(--emerald); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-dark:hover{ background: var(--emerald-deep); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn-ghost-light{ background: rgba(255,255,255,0.08); color:#fff; border: 1.5px solid rgba(255,255,255,0.35); }
+.btn-ghost-light:hover{ background: rgba(255,255,255,0.16); transform: translateY(-2px); }
+.btn-block{ width: 100%; }
+
+/* ============================================================
+   1. NAVIGATION
+============================================================ */
+.nav{
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  padding: 20px 0;
+  transition: background .35s ease, padding .35s ease, box-shadow .35s ease, border-color .35s ease;
+  border-bottom: 1px solid transparent;
+}
+.nav.scrolled{
+  background: rgba(246, 243, 236, 0.86);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap{ display: flex; align-items: center; justify-content: space-between; }
+.brand{ display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 24px; letter-spacing: 0.01em; }
+.brand .mark{
+  width: 34px; height: 34px; border-radius: 9px;
+  background: linear-gradient(150deg, var(--emerald), var(--emerald-deep));
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold-tint); font-family: var(--font-display); font-size: 20px; font-style: italic;
+  box-shadow: var(--shadow-sm);
+}
+.nav-links{ display: flex; align-items: center; gap: 36px; }
+.nav-links a{
+  font-size: 14.5px; font-weight: 600; color: var(--ink-soft);
+  position: relative; padding: 4px 0;
+}
+.nav-links a::after{
+  content: ""; position: absolute; left: 0; bottom: -2px; height: 1.5px; width: 0;
+  background: var(--emerald); transition: width .3s ease;
+}
+.nav-links a:hover{ color: var(--ink); }
+.nav-links a:hover::after{ width: 100%; }
+.nav-cta{ display: flex; align-items: center; gap: 22px; }
+.nav-cta .btn{ padding: 11px 22px; font-size: 14px; }
+
+.nav-toggle{ display: none; flex-direction: column; gap: 5px; width: 26px; z-index: 600; }
+.nav-toggle span{ height: 2px; width: 100%; background: var(--ink); transition: transform .3s ease, opacity .3s ease; }
+.nav-toggle.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2){ opacity: 0; }
+.nav-toggle.open span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+
+.mobile-panel{
+  position: fixed; inset: 0; background: var(--paper);
+  z-index: 490; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px;
+  transform: translateY(-100%); transition: transform .45s cubic-bezier(.2,.7,.2,1);
+}
+.mobile-panel.open{ transform: translateY(0); }
+.mobile-panel a{ font-family: var(--font-display); font-size: 30px; color: var(--ink); }
+.mobile-panel .btn{ margin-top: 10px; }
+
+@media (max-width: 900px){
+  .nav-links, .nav-cta .btn:first-child{ display: none; }
+  .nav-toggle{ display: flex; }
+}
+
+/* ============================================================
+   2. HERO
+============================================================ */
+.hero{
+  padding: 190px 0 120px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(680px 460px at 88% -6%, rgba(92,107,60,0.12), transparent 60%),
+    radial-gradient(520px 400px at -4% 30%, rgba(156,107,62,0.14), transparent 60%);
+}
+.hero .wrap{ display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 60px; align-items: center; }
+.hero-copy h1{
+  font-family: var(--font-display);
+  font-size: clamp(40px, 5.6vw, 68px);
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.hero-copy h1 .accent{
+  font-style: italic; color: var(--emerald); position: relative; white-space: nowrap;
+}
+.hero-copy h1 .accent svg{
+  position: absolute; left: -2%; bottom: -0.16em; width: 104%; height: 0.3em;
+  overflow: visible;
+}
+.hero-copy h1 .accent path{
+  fill: none; stroke: var(--gold); stroke-width: 5; stroke-linecap: round;
+  stroke-dasharray: 340; stroke-dashoffset: 340;
+  animation: draw-underline 1.1s 0.9s cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes draw-underline{ to{ stroke-dashoffset: 0; } }
+
+.hero-copy p.lead{
+  margin-top: 26px; font-size: 18.5px; color: var(--ink-soft); max-width: 480px;
+}
+.hero-actions{ display: flex; gap: 16px; margin-top: 38px; flex-wrap: wrap; }
+.hero-trust{
+  margin-top: 52px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.hero-trust span.label{ font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.hero-trust .tags{ display: flex; gap: 8px; flex-wrap: wrap; }
+.hero-trust .tags span{
+  font-size: 13px; font-weight: 600; color: var(--ink-soft);
+  padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,0.5);
+}
+
+/* Hero visual — floating abstract browser mock */
+.hero-visual{ position: relative; height: 460px; }
+.mock-window{
+  position: absolute; width: 340px; border-radius: 16px; background: var(--card);
+  box-shadow: var(--shadow-lg); overflow: hidden; border: 1px solid var(--line-soft);
+}
+.mock-window .bar{ display: flex; align-items: center; gap: 6px; padding: 12px 14px; border-bottom: 1px solid var(--line-soft); }
+.mock-window .bar i{ width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.mock-primary{ top: 10px; left: 26%; z-index: 3; animation: float-a 7s ease-in-out infinite; }
+.mock-primary .content{ height: 220px; background: linear-gradient(160deg, var(--emerald-tint), #fff 70%); padding: 20px; }
+.mock-primary .content .block-title{ width: 62%; height: 12px; border-radius: 4px; background: var(--emerald); opacity: .8; margin-bottom: 10px; }
+.mock-primary .content .block-line{ width: 84%; height: 7px; border-radius: 4px; background: var(--ink-soft); opacity: .18; margin-bottom: 8px; }
+.mock-primary .content .block-btn{ margin-top: 16px; width: 96px; height: 26px; border-radius: 999px; background: var(--gold); }
+
+.mock-secondary{
+  width: 220px; top: 230px; left: -2%; z-index: 2;
+  animation: float-b 8s ease-in-out infinite;
+}
+.mock-secondary .content{ height: 140px; padding: 16px; background: linear-gradient(160deg, var(--gold-tint), #fff 75%); }
+.mock-secondary .content .dot-row{ display: flex; gap: 6px; margin-bottom: 12px; }
+.mock-secondary .content .dot-row span{ width: 22px; height: 22px; border-radius: 6px; background: var(--gold); opacity: .75; }
+.mock-secondary .content .block-line{ width: 90%; height: 6px; border-radius: 3px; background: var(--ink-soft); opacity: .18; margin-bottom: 7px; }
+
+.hero-visual .badge-float{
+  position: absolute; bottom: 6px; right: 8%; z-index: 4;
+  background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 14px;
+  font-family: var(--font-mono); font-size: 12.5px; box-shadow: var(--shadow-md);
+  display: flex; align-items: center; gap: 10px; animation: float-c 6s ease-in-out infinite;
+}
+.badge-float .pulse{ width: 8px; height: 8px; border-radius: 50%; background: #6FD6A8; box-shadow: 0 0 0 rgba(111,214,168,.6); animation: pulse 2s infinite; }
+@keyframes pulse{ 0%{ box-shadow: 0 0 0 0 rgba(111,214,168,.55);} 70%{ box-shadow: 0 0 0 9px rgba(111,214,168,0);} 100%{ box-shadow: 0 0 0 0 rgba(111,214,168,0);} }
+
+@keyframes float-a{ 0%,100%{ transform: translateY(0) rotate(-2deg);} 50%{ transform: translateY(-14px) rotate(-1deg);} }
+@keyframes float-b{ 0%,100%{ transform: translateY(0) rotate(2deg);} 50%{ transform: translateY(12px) rotate(3deg);} }
+@keyframes float-c{ 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-8px);} }
+
+@media (max-width: 980px){
+  .hero .wrap{ grid-template-columns: 1fr; }
+  .hero-visual{ height: 380px; margin-top: 20px; }
+  .hero{ padding: 150px 0 80px; }
+}
+@media (max-width: 520px){
+  .hero-actions{ flex-direction: column; align-items: stretch; }
+  .mock-primary{ width: 280px; left: 8%; }
+  .mock-secondary{ width: 180px; left: -4%; top: 250px; }
+}
+
+/* ============================================================
+   3. SERVICES
+============================================================ */
+.services-grid{
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+}
+.service-card{
+  background: var(--card); border: 1px solid var(--line-soft); border-radius: var(--radius-md);
+  padding: 32px 28px; transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease;
+}
+.service-card:hover{ transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: transparent; }
+.service-icon{
+  width: 48px; height: 48px; border-radius: 12px; background: var(--emerald-tint);
+  display: flex; align-items: center; justify-content: center; color: var(--emerald); margin-bottom: 22px;
+}
+.service-card h3{ font-family: var(--font-display); font-size: 22px; margin-bottom: 10px; }
+.service-card p{ font-size: 14.8px; color: var(--ink-soft); }
+@media (max-width: 940px){ .services-grid{ grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px){ .services-grid{ grid-template-columns: 1fr; } }
+
+/* ============================================================
+   4. WHY VELORA WEB
+============================================================ */
+.why-grid{
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; background: var(--card);
+}
+.why-item{
+  padding: 40px 28px; border-right: 1px solid var(--line);
+  transition: background .3s ease;
+}
+.why-item:last-child{ border-right: none; }
+.why-item:hover{ background: var(--emerald-tint); }
+.why-item .num{ font-family: var(--font-mono); font-size: 12px; color: var(--gold-deep); letter-spacing: .1em; }
+.why-item h3{ font-family: var(--font-display); font-size: 21px; margin: 14px 0 8px; }
+.why-item p{ font-size: 14px; color: var(--ink-soft); }
+@media (max-width: 940px){
+  .why-grid{ grid-template-columns: repeat(2, 1fr); }
+  .why-item:nth-child(2){ border-right: none; }
+  .why-item{ border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 560px){
+  .why-grid{ grid-template-columns: 1fr; }
+  .why-item{ border-right: none !important; }
+}
+
+/* ============================================================
+   5. PORTFOLIO
+============================================================ */
+.portfolio-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+.portfolio-card{
+  border-radius: var(--radius-md); overflow: hidden; background: var(--card);
+  border: 1px solid var(--line-soft); box-shadow: var(--shadow-sm);
+  transition: transform .4s cubic-bezier(.2,.7,.2,1), box-shadow .4s ease;
+}
+.portfolio-card:hover{ transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+.portfolio-mock{ position: relative; aspect-ratio: 4/3; overflow: hidden; }
+.portfolio-mock .browser-bar{
+  display: flex; align-items: center; gap: 6px; padding: 10px 12px; background: rgba(255,255,255,.55);
+  position: absolute; top: 0; left: 0; right: 0; z-index: 2; backdrop-filter: blur(6px);
+}
+.portfolio-mock .browser-bar i{ width: 7px; height: 7px; border-radius: 50%; background: rgba(20,33,28,.28); }
+.portfolio-mock .scene{ position: absolute; inset: 0; padding-top: 34px; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.portfolio-card:hover .scene{ transform: scale(1.045); }
+
+.scene-bakery{ background: linear-gradient(155deg, #F4E4CE, #EFC9A0 70%); padding: 40px 22px; }
+.scene-bakery .s-title{ width: 64%; height: 14px; border-radius: 4px; background: #7A4A25; opacity: .85; margin-bottom: 12px; }
+.scene-bakery .s-line{ width: 80%; height: 7px; border-radius: 4px; background: #7A4A25; opacity: .35; margin-bottom: 8px; }
+.scene-bakery .s-cta{ margin-top: 16px; width: 100px; height: 26px; border-radius: 999px; background: #8A5A2E; }
+.scene-bakery .s-cards{ display: flex; gap: 8px; margin-top: 22px; }
+.scene-bakery .s-cards div{ width: 42px; height: 42px; border-radius: 8px; background: rgba(122,74,37,0.22); }
+
+.scene-salon{ background: linear-gradient(155deg, #1B1B1E, #2E2A24 75%); padding: 40px 22px; }
+.scene-salon .s-title{ width: 58%; height: 14px; border-radius: 4px; background: var(--gold); margin-bottom: 12px; }
+.scene-salon .s-line{ width: 76%; height: 7px; border-radius: 4px; background: #EDE6D6; opacity: .35; margin-bottom: 8px; }
+.scene-salon .s-cta{ margin-top: 16px; width: 110px; height: 26px; border-radius: 999px; border: 1.5px solid var(--gold); }
+.scene-salon .s-cards{ display:flex; gap:8px; margin-top:22px;}
+.scene-salon .s-cards div{ width: 42px; height: 42px; border-radius: 50%; background: rgba(200,155,60,0.2); }
+
+.scene-fitness{ background: linear-gradient(155deg, #3E4A28, #5C6B3C 75%); padding: 40px 22px; }
+.scene-fitness .s-title{ width: 66%; height: 14px; border-radius: 4px; background: #F0F2E4; margin-bottom: 12px; }
+.scene-fitness .s-line{ width: 78%; height: 7px; border-radius: 4px; background: #F0F2E4; opacity: .4; margin-bottom: 8px; }
+.scene-fitness .s-cta{ margin-top: 16px; width: 100px; height: 26px; border-radius: 999px; background: #D3DDB8; }
+.scene-fitness .s-cards{ display: flex; gap: 8px; margin-top: 22px; }
+.scene-fitness .s-cards div{ width: 42px; height: 42px; border-radius: 8px; background: rgba(240,242,228,0.22); }
+
+.portfolio-mock .demo-badge{
+  position: absolute; top: 40px; right: 14px; z-index: 3;
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+  background: rgba(255,255,255,0.92); color: var(--ink); padding: 5px 10px; border-radius: 999px;
+  border: 1px solid rgba(20,33,28,.12);
+}
+.portfolio-info{ padding: 22px 24px 26px; }
+.portfolio-info .cat{ font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-deep); }
+.portfolio-info h3{ font-family: var(--font-display); font-size: 23px; margin-top: 8px; }
+.portfolio-info p{ font-size: 14px; color: var(--ink-soft); margin-top: 6px; }
+
+@media (max-width: 940px){ .portfolio-grid{ grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px){ .portfolio-grid{ grid-template-columns: 1fr; } }
+
+/* ============================================================
+   6. HOW IT WORKS  (signature journey line)
+============================================================ */
+.journey{ position: relative; max-width: 760px; margin: 0 auto; }
+.journey-track{
+  position: absolute; left: 27px; top: 6px; bottom: 6px; width: 2px;
+  background: var(--line);
+}
+.journey-progress{
+  position: absolute; left: 27px; top: 6px; width: 2px; height: 0%;
+  background: linear-gradient(var(--emerald), var(--gold));
+  transition: height .1s linear;
+}
+.journey-step{ position: relative; padding: 0 0 56px 78px; }
+.journey-step:last-child{ padding-bottom: 4px; }
+.journey-step .step-num{
+  position: absolute; left: 0; top: -2px; width: 56px; height: 56px; border-radius: 50%;
+  background: var(--card); border: 2px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 16px; color: var(--muted);
+  transition: border-color .4s ease, color .4s ease, background .4s ease, transform .4s ease;
+  z-index: 2;
+}
+.journey-step.active .step-num{
+  border-color: var(--emerald); color: #fff; background: var(--emerald); transform: scale(1.06);
+}
+.journey-step h3{ font-family: var(--font-display); font-size: 24px; margin-bottom: 8px; padding-top: 8px; }
+.journey-step p{ color: var(--ink-soft); font-size: 15px; max-width: 460px; }
+
+@media (max-width: 560px){
+  .journey-track, .journey-progress{ left: 21px; }
+  .journey-step{ padding-left: 62px; }
+  .journey-step .step-num{ width: 44px; height: 44px; font-size: 14px; }
+}
+
+/* ============================================================
+   7. PRICING
+============================================================ */
+.pricing-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; align-items: stretch; }
+.price-card{
+  background: var(--card); border: 1px solid var(--line-soft); border-radius: var(--radius-lg);
+  padding: 38px 32px; display: flex; flex-direction: column;
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
+}
+.price-card:hover{ transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.price-card.featured{
+  background: var(--emerald); color: #fff; border-color: var(--emerald);
+  position: relative; transform: translateY(-14px);
+}
+.price-card.featured:hover{ transform: translateY(-20px); }
+.price-card.featured .price-desc,
+.price-card.featured .feature-list li{ color: rgba(255,255,255,0.82); }
+.price-card.featured .feature-list li svg{ color: #B7E0C7; }
+.popular-tag{
+  position: absolute; top: -14px; right: 28px; background: var(--gold); color: var(--ink);
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  padding: 6px 12px; border-radius: 999px; box-shadow: var(--shadow-sm);
+}
+.price-tier{ font-family: var(--font-mono); font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-deep); }
+.price-card.featured .price-tier{ color: var(--gold); }
+.price-card h3{ font-family: var(--font-display); font-size: 27px; margin: 10px 0 4px; }
+.price-desc{ font-size: 14px; color: var(--ink-soft); margin-bottom: 22px; min-height: 40px; }
+
+/* ---- EDIT PRICES HERE ---- */
+.price-value{ font-family: var(--font-display); font-size: 44px; display: flex; align-items: baseline; gap: 6px; }
+.price-value .currency{ font-size: 22px; font-family: var(--font-body); font-weight: 700; }
+.price-value .period{ font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); font-weight: 400; margin-left: 4px; }
+.price-card.featured .price-value .period{ color: rgba(255,255,255,0.7); }
+/* --------------------------- */
+
+.feature-list{ margin: 26px 0 30px; display: flex; flex-direction: column; gap: 13px; flex-grow: 1; }
+.feature-list li{ display: flex; align-items: center; gap: 10px; font-size: 14.5px; color: var(--ink-soft); }
+.feature-list li svg{ flex-shrink: 0; color: var(--emerald); }
+
+@media (max-width: 940px){
+  .pricing-grid{ grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; }
+  .price-card.featured{ transform: translateY(0); order: -1; }
+  .price-card.featured:hover{ transform: translateY(-6px); }
+}
+
+/* ============================================================
+   8. FAQ
+============================================================ */
+.faq-list{ max-width: 760px; margin: 0 auto; border-top: 1px solid var(--line); }
+.faq-item{ border-bottom: 1px solid var(--line); }
+.faq-q{
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  padding: 26px 4px; text-align: left; font-family: var(--font-body); font-weight: 700; font-size: 17px;
+}
+.faq-q .plus{ position: relative; width: 20px; height: 20px; flex-shrink: 0; }
+.faq-q .plus::before, .faq-q .plus::after{
+  content: ""; position: absolute; background: var(--ink); border-radius: 2px;
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), opacity .35s ease;
+}
+.faq-q .plus::before{ width: 100%; height: 2px; top: 9px; left: 0; }
+.faq-q .plus::after{ width: 2px; height: 100%; top: 0; left: 9px; }
+.faq-item.open .faq-q .plus::after{ transform: rotate(90deg); opacity: 0; }
+.faq-a{ max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.2,.7,.2,1); }
+.faq-a p{ padding: 0 4px 26px; color: var(--ink-soft); font-size: 15px; max-width: 620px; }
+
+/* ============================================================
+   9. CONTACT
+============================================================ */
+.contact-section{
+  background: var(--ink); color: var(--paper); border-radius: var(--radius-lg);
+  margin: 0 32px; padding: 76px 60px; position: relative; overflow: hidden;
+}
+.contact-section::before{
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(560px 320px at 85% 0%, rgba(156,107,62,0.20), transparent 65%);
+}
+.contact-inner{ position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 50px; align-items: center; }
+.contact-inner .eyebrow{ color: var(--gold); }
+.contact-inner .eyebrow::before{ background: var(--gold); }
+.contact-inner h2{ font-family: var(--font-display); font-size: clamp(30px, 4vw, 42px); }
+.contact-inner p.lead{ margin-top: 16px; color: rgba(246,243,236,0.72); font-size: 16.5px; max-width: 440px; }
+
+.contact-cards{ display: flex; flex-direction: column; gap: 16px; }
+.contact-card{
+  display: flex; align-items: center; gap: 16px; padding: 20px 22px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 16px;
+  transition: background .3s ease, transform .3s ease, border-color .3s ease;
+}
+.contact-card:hover{ background: rgba(255,255,255,0.12); transform: translateX(4px); border-color: rgba(255,255,255,0.3); }
+.contact-card .ic{
+  width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.1); color: var(--gold);
+}
+.contact-card .txt .lbl{ font-family: var(--font-mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: rgba(246,243,236,0.55); }
+.contact-card .txt .val{ font-weight: 700; font-size: 16px; margin-top: 2px; }
+
+@media (max-width: 900px){
+  .contact-section{ margin: 0 16px; padding: 52px 26px; }
+  .contact-inner{ grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   10. FOOTER
+============================================================ */
+.footer{ padding: 90px 0 34px; }
+.footer-top{
+  display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px;
+  padding-bottom: 56px; border-bottom: 1px solid var(--line);
+}
+.footer-brand .brand{ margin-bottom: 14px; }
+.footer-brand p{ color: var(--ink-soft); font-size: 14.5px; max-width: 260px; }
+.footer-social{ display: flex; gap: 10px; margin-top: 22px; }
+.footer-social a{
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center; color: var(--ink-soft);
+  transition: background .3s ease, color .3s ease, border-color .3s ease, transform .3s ease;
+}
+.footer-social a:hover{ background: var(--emerald); color: #fff; border-color: var(--emerald); transform: translateY(-3px); }
+.footer-col h4{ font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+.footer-col ul{ display: flex; flex-direction: column; gap: 12px; }
+.footer-col a{ font-size: 14.5px; color: var(--ink-soft); transition: color .25s ease; }
+.footer-col a:hover{ color: var(--emerald); }
+.footer-bottom{ display: flex; justify-content: space-between; align-items: center; padding-top: 28px; flex-wrap: wrap; gap: 12px; }
+.footer-bottom p{ font-size: 13px; color: var(--muted); }
+
+@media (max-width: 780px){
+  .footer-top{ grid-template-columns: 1fr 1fr; row-gap: 40px; }
+}
+@media (max-width: 480px){
+  .footer-top{ grid-template-columns: 1fr; }
+}
+
+/* back to top */
+.to-top{
+  position: fixed; bottom: 26px; right: 26px; width: 46px; height: 46px; border-radius: 50%;
+  background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-md); z-index: 400; opacity: 0; pointer-events: none; transform: translateY(10px);
+  transition: opacity .3s ease, transform .3s ease, background .3s ease;
+}
+.to-top.show{ opacity: 1; pointer-events: auto; transform: translateY(0); }
+.to-top:hover{ background: var(--emerald); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVIGATION
+============================================================ -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#top" class="brand"><span class="mark">V</span>Velora Web</a>
+
+    <nav class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#why">Why Us</a>
+      <a href="#work">Work</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="nav-cta">
+      <a href="#contact" class="btn btn-outline">Contact Us</a>
+      <a href="#contact" class="btn btn-primary">Get Your Website</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-panel" id="mobilePanel">
+  <a href="#services">Services</a>
+  <a href="#why">Why Us</a>
+  <a href="#work">Work</a>
+  <a href="#pricing">Pricing</a>
+  <a href="#faq">FAQ</a>
+  <a href="#contact">Contact</a>
+  <a href="#contact" class="btn btn-primary">Get Your Website</a>
+</div>
+
+<main id="top">
+
+  <!-- ============================================================
+       1. HERO
+  ============================================================ -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <p class="eyebrow">Web design for local businesses</p>
+        <h1>
+          Websites that make your business
+          <span class="accent">
+            stand out.
+            <svg viewBox="0 0 220 24" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M4 16 C 60 6, 160 6, 216 15"/>
+            </svg>
+          </span>
+        </h1>
+        <p class="lead">Velora Web designs and builds modern, affordable websites for small and local businesses — the kind that turn visitors into customers, without the big agency price tag.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">Get Your Website</a>
+          <a href="#work" class="btn btn-outline">View Our Work</a>
+        </div>
+        <div class="hero-trust">
+          <span class="label">Built for</span>
+          <div class="tags">
+            <span>Bakeries</span><span>Salons</span><span>Gyms</span><span>Clinics</span><span>Contractors</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="mock-window mock-primary">
+          <div class="bar"><i></i><i></i><i></i></div>
+          <div class="content">
+            <div class="block-title"></div>
+            <div class="block-line"></div>
+            <div class="block-line" style="width:60%"></div>
+            <div class="block-btn"></div>
+          </div>
+        </div>
+        <div class="mock-window mock-secondary">
+          <div class="bar"><i></i><i></i><i></i></div>
+          <div class="content">
+            <div class="dot-row"><span></span><span></span><span></span></div>
+            <div class="block-line"></div>
+            <div class="block-line" style="width:60%"></div>
+          </div>
+        </div>
+        <div class="badge-float"><span class="pulse"></span> Site live in 5 days</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. SERVICES
+  ============================================================ -->
+  <section class="section" id="services">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">What we build</p>
+        <h2>Everything your business needs online.</h2>
+        <p>From a first website to a full redesign, every project is built clean, fast and made to actually bring customers in.</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"/></svg>
+          </div>
+          <h3>Business Websites</h3>
+          <p>A complete, professional website that tells your story, builds trust and turns visitors into customers.</p>
+        </div>
+
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></svg>
+          </div>
+          <h3>Landing Pages</h3>
+          <p>A focused, high-converting single page built for a launch, offer, or ad campaign.</p>
+        </div>
+
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M20 11a8 8 0 1 0-2.6 6.1"/><path d="M20 5v6h-6"/></svg>
+          </div>
+          <h3>Website Redesign</h3>
+          <p>Give your outdated site a modern, faster, better-looking upgrade — without starting from zero.</p>
+        </div>
+
+        <div class="service-card reveal reveal-delay-3">
+          <div class="service-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="7" y="2.5" width="10" height="19" rx="2.4"/><path d="M11 18h2"/></svg>
+          </div>
+          <h3>Mobile-Responsive Design</h3>
+          <p>Every website we build looks and works flawlessly on phones, tablets and desktops.</p>
+        </div>
+
+        <div class="service-card reveal reveal-delay-4">
+          <div class="service-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8M8 10.5l1.5 1.5 3-3"/></svg>
+          </div>
+          <h3>Basic SEO</h3>
+          <p>On-page SEO setup so your business can actually be found by customers on Google.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       3. WHY VELORA WEB
+  ============================================================ -->
+  <section class="section section-alt" id="why">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Why Velora Web</p>
+        <h2>Built to look great and load fast.</h2>
+        <p>No bloated templates, no waiting weeks, no confusing pricing. Just clean, modern websites made for small businesses.</p>
+      </div>
+
+      <div class="why-grid reveal">
+        <div class="why-item">
+          <span class="num">01</span>
+          <h3>Modern Design</h3>
+          <p>Clean, current layouts that make your business look established and trustworthy.</p>
+        </div>
+        <div class="why-item">
+          <span class="num">02</span>
+          <h3>Mobile Friendly</h3>
+          <p>Every site is built mobile-first, since most of your customers will find you on their phone.</p>
+        </div>
+        <div class="why-item">
+          <span class="num">03</span>
+          <h3>Fast Delivery</h3>
+          <p>Most websites are designed, built and launched within a week — not months.</p>
+        </div>
+        <div class="why-item">
+          <span class="num">04</span>
+          <h3>Affordable Pricing</h3>
+          <p>Professional results at a price that actually makes sense for a small business.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. PORTFOLIO
+  ============================================================ -->
+  <section class="section" id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Recent work</p>
+        <h2>A look at what we design.</h2>
+        <p>Demo projects showing the kind of clean, modern websites Velora Web builds for local businesses.</p>
+      </div>
+
+      <div class="portfolio-grid">
+        <article class="portfolio-card reveal">
+          <div class="portfolio-mock">
+            <div class="browser-bar"><i></i><i></i><i></i></div>
+            <span class="demo-badge">Demo Project</span>
+            <div class="scene scene-bakery">
+              <div class="s-title"></div>
+              <div class="s-line"></div>
+              <div class="s-line" style="width:55%"></div>
+              <div class="s-cta"></div>
+              <div class="s-cards"><div></div><div></div><div></div></div>
+            </div>
+          </div>
+          <div class="portfolio-info">
+            <span class="cat">Business Website</span>
+            <h3>Bloom &amp; Co. Bakery</h3>
+            <p>A warm, appetite-driven site with online ordering and store info.</p>
+          </div>
+        </article>
+
+        <article class="portfolio-card reveal reveal-delay-1">
+          <div class="portfolio-mock">
+            <div class="browser-bar"><i></i><i></i><i></i></div>
+            <span class="demo-badge">Demo Project</span>
+            <div class="scene scene-salon">
+              <div class="s-title"></div>
+              <div class="s-line"></div>
+              <div class="s-line" style="width:50%"></div>
+              <div class="s-cta"></div>
+              <div class="s-cards"><div></div><div></div><div></div></div>
+            </div>
+          </div>
+          <div class="portfolio-info">
+            <span class="cat">Landing Page</span>
+            <h3>The Fade Room</h3>
+            <p>A bold, dark-themed booking page for a modern barbershop.</p>
+          </div>
+        </article>
+
+        <article class="portfolio-card reveal reveal-delay-2">
+          <div class="portfolio-mock">
+            <div class="browser-bar"><i></i><i></i><i></i></div>
+            <span class="demo-badge">Demo Project</span>
+            <div class="scene scene-fitness">
+              <div class="s-title"></div>
+              <div class="s-line"></div>
+              <div class="s-line" style="width:60%"></div>
+              <div class="s-cta"></div>
+              <div class="s-cards"><div></div><div></div><div></div></div>
+            </div>
+          </div>
+          <div class="portfolio-info">
+            <span class="cat">Website Redesign</span>
+            <h3>Peak Fitness Studio</h3>
+            <p>A full redesign that replaced an outdated site with a fast, modern one.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       5. HOW IT WORKS
+  ============================================================ -->
+  <section class="section section-alt" id="how">
+    <div class="wrap">
+      <div class="section-head center reveal" style="margin-left:auto;margin-right:auto;">
+        <p class="eyebrow" style="justify-content:center;">The process</p>
+        <h2>How it works.</h2>
+        <p>A simple, four-step process from first message to a live website.</p>
+      </div>
+
+      <div class="journey">
+        <div class="journey-track"></div>
+        <div class="journey-progress" id="journeyProgress"></div>
+
+        <div class="journey-step" data-step>
+          <div class="step-num">1</div>
+          <h3>Tell Us What You Need</h3>
+          <p>Share a few details about your business and what you want your website to do — via WhatsApp, email, or a quick call.</p>
+        </div>
+        <div class="journey-step" data-step>
+          <div class="step-num">2</div>
+          <h3>We Design &amp; Build</h3>
+          <p>Our team designs and develops your site with clean, modern visuals tailored to your business.</p>
+        </div>
+        <div class="journey-step" data-step>
+          <div class="step-num">3</div>
+          <h3>You Review</h3>
+          <p>We share a preview link so you can check everything and request any changes before it goes live.</p>
+        </div>
+        <div class="journey-step" data-step>
+          <div class="step-num">4</div>
+          <h3>We Launch</h3>
+          <p>Once you're happy with it, we publish your website and it goes live for the world to see.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       6. PRICING
+  ============================================================ -->
+  <section class="section" id="pricing">
+    <div class="wrap">
+      <div class="section-head center reveal" style="margin-left:auto;margin-right:auto;">
+        <p class="eyebrow" style="justify-content:center;">Pricing</p>
+        <h2>Simple, honest pricing.</h2>
+        <p>Every project is a little different — these packages give you a starting point. Final pricing depends on your exact needs.</p>
+      </div>
+
+      <!--
+        EDIT PRICES:
+        Update the numbers inside <span class="price-value"> below.
+        Each price is wrapped in its own <span> so it's easy to find and change.
+      -->
+      <div class="pricing-grid">
+
+        <div class="price-card reveal">
+          <span class="price-tier">Starter</span>
+          <h3>Starter</h3>
+          <p class="price-desc">A simple, professional online presence to get your business found.</p>
+          <div class="price-value"><span class="currency">₹</span>4,999</div>
+          <ul class="feature-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>1-page website</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Mobile responsive</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Contact form</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Basic SEO setup</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>3-day delivery</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline btn-block" data-package="Starter">Get Started</a>
+        </div>
+
+        <div class="price-card featured reveal reveal-delay-1">
+          <span class="popular-tag">Most Popular</span>
+          <span class="price-tier">Business</span>
+          <h3>Business</h3>
+          <p class="price-desc">A complete, multi-page website built to grow with your business.</p>
+          <div class="price-value"><span class="currency">₹</span>9,999</div>
+          <ul class="feature-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Up to 5 pages</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Mobile responsive</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Contact form + map</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Basic SEO setup</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>WhatsApp integration</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>5–7 day delivery</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary btn-block" data-package="Business">Get Started</a>
+        </div>
+
+        <div class="price-card reveal reveal-delay-2">
+          <span class="price-tier">Custom</span>
+          <h3>Custom</h3>
+          <p class="price-desc">For unique projects, larger sites, or online stores and booking systems.</p>
+          <div class="price-value" style="font-size:32px;">Let's Talk</div>
+          <ul class="feature-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Custom page count</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>E-commerce / booking</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Advanced SEO</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Priority support</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 12l5 5L20 6"/></svg>Timeline based on scope</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline btn-block" data-package="Custom">Contact Us</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       7. FAQ
+  ============================================================ -->
+  <section class="section section-alt" id="faq">
+    <div class="wrap">
+      <div class="section-head center reveal" style="margin-left:auto;margin-right:auto;">
+        <p class="eyebrow" style="justify-content:center;">FAQ</p>
+        <h2>Questions, answered.</h2>
+      </div>
+
+      <div class="faq-list reveal">
+        <div class="faq-item">
+          <button class="faq-q"><span>How long does it take to build my website?</span><span class="plus"></span></button>
+          <div class="faq-a"><p>Most websites are delivered within 3–7 days depending on the package and how quickly we receive your content.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Do I need to provide the content (text and images)?</span><span class="plus"></span></button>
+          <div class="faq-a"><p>Not necessarily. We can help write your website content, and suggest solutions if you don't have professional photos yet.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Will my website work on mobile phones?</span><span class="plus"></span></button>
+          <div class="faq-a"><p>Yes. Every website we build is fully mobile-responsive and tested across phones, tablets and desktops.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Can I make changes after the website is live?</span><span class="plus"></span></button>
+          <div class="faq-a"><p>Yes, minor edits are included right after launch, and we offer ongoing support plans if you need bigger changes later.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Do you offer ongoing support after launch?</span><span class="plus"></span></button>
+          <div class="faq-a"><p>Yes, we offer maintenance and support packages if you'd like us to keep managing updates for you.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>How do I get started?</span><span class="plus"></span></button>
+          <div class="faq-a"><p>Just reach out via WhatsApp or email with a few details about your business, and we'll take it from there.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       8. CONTACT
+  ============================================================ -->
+  <section class="section" id="contact">
+    <div class="contact-section reveal">
+      <div class="contact-inner">
+        <div>
+          <p class="eyebrow">Get in touch</p>
+          <h2>Let's build something great.</h2>
+          <p class="lead">Tell us a little about your business and what you need — we typically reply within 24 hours.</p>
+        </div>
+
+        <div class="contact-cards">
+          <!-- EDIT EMAIL: update mailto link + visible text below -->
+          <a class="contact-card" href="mailto:hello.veloraweb@gmail.com">
+            <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+            <span class="txt"><span class="lbl">Email us</span><span class="val">hello.veloraweb@gmail.com</span></span>
+          </a>
+
+          <!-- EDIT PHONE: update wa.me number (country code + number, no symbols) + visible text below -->
+          <a class="contact-card" href="https://wa.me/918828118532?text=Hi%20Velora%20Web%2C%20I'd%20like%20to%20get%20a%20website%20for%20my%20business." target="_blank" rel="noopener">
+            <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20 12a8 8 0 1 1-3.8-6.8"/><path d="M12 4a8 8 0 0 1 8 8"/><path d="M8.5 9.5c0 3.5 2.5 6 6 6l1-2-3-1-1 1c-1-.5-2-1.5-2.5-2.5l1-1-1-3-2 1z"/></svg></span>
+            <span class="txt"><span class="lbl">WhatsApp us</span><span class="val">+91 88281 18532</span></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#top" class="brand"><span class="mark">V</span>Velora Web</a>
+        <p>Modern, affordable websites for small and local businesses.</p>
+        <div class="footer-social">
+          <!-- EDIT SOCIAL LINKS -->
+          <a href="#" aria-label="Instagram"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg></a>
+          <a href="#" aria-label="Facebook"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 9h3V6h-3c-1.7 0-3 1.3-3 3v2H9v3h2v6h3v-6h3l1-3h-4V9c0-.6.4-1 1-1z"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 10v7M7 7v.01M11 17v-4.5c0-1.4 1-2.5 2.5-2.5S16 11.1 16 12.5V17M11 10.5V17"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#why">Why Us</a></li>
+          <li><a href="#work">Our Work</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#how">How It Works</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello.veloraweb@gmail.com">hello.veloraweb@gmail.com</a></li>
+          <li><a href="https://wa.me/918828118532" target="_blank" rel="noopener">+91 88281 18532</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© <span id="year"></span> Velora Web. All rights reserved.</p>
+      <p>Designed &amp; built by Velora Web.</p>
+    </div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="Back to top">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+/* ============================================================
+   JS — nav state, mobile menu, scroll reveal, FAQ accordion,
+   journey progress line, back-to-top.
+============================================================ */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* --- sticky nav background on scroll --- */
+const nav = document.getElementById('nav');
+const toTop = document.getElementById('toTop');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  nav.classList.toggle('scrolled', y > 40);
+  toTop.classList.toggle('show', y > 700);
+}, { passive: true });
+
+/* --- mobile menu toggle --- */
+const navToggle = document.getElementById('navToggle');
+const mobilePanel = document.getElementById('mobilePanel');
+navToggle.addEventListener('click', () => {
+  navToggle.classList.toggle('open');
+  mobilePanel.classList.toggle('open');
+});
+mobilePanel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  navToggle.classList.remove('open');
+  mobilePanel.classList.remove('open');
+}));
+
+/* --- back to top --- */
+toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* --- scroll reveal --- */
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+/* --- FAQ accordion --- */
+document.querySelectorAll('.faq-item').forEach(item => {
+  const q = item.querySelector('.faq-q');
+  const a = item.querySelector('.faq-a');
+  q.addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(openItem => {
+      if (openItem !== item) {
+        openItem.classList.remove('open');
+        openItem.querySelector('.faq-a').style.maxHeight = null;
+      }
+    });
+    item.classList.toggle('open', !isOpen);
+    a.style.maxHeight = !isOpen ? a.scrollHeight + 'px' : null;
+  });
+});
+
+/* --- "How It Works" journey progress line + active step highlight --- */
+const journey = document.querySelector('.journey');
+const journeyProgress = document.getElementById('journeyProgress');
+const steps = document.querySelectorAll('.journey-step');
+
+function updateJourney() {
+  if (!journey) return;
+  const rect = journey.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const total = rect.height;
+  // progress based on how far the viewport center has moved through the track
+  const start = vh * 0.8;
+  const raw = (start - rect.top) / (total);
+  const progress = Math.min(Math.max(raw, 0), 1);
+  journeyProgress.style.height = (progress * 100) + '%';
+
+  steps.forEach((step, i) => {
+    const stepFraction = (i + 0.5) / steps.length;
+    step.classList.toggle('active', progress >= stepFraction - 0.06);
+  });
+}
+window.addEventListener('scroll', updateJourney, { passive: true });
+window.addEventListener('resize', updateJourney);
+updateJourney();
+
+/* --- prefill WhatsApp message with chosen package name --- */
+document.querySelectorAll('[data-package]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // optional: could deep-link to WhatsApp with package pre-filled
+    // left simple so the click still scrolls to the on-page contact section
+  });
+});
+</script>
+
+</body>
+</html>
